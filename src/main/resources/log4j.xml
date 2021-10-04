@@ -1,0 +1,65 @@
+<!DOCTYPE log4j:configuration SYSTEM "log4j.dtd">
+<log4j:configuration debug="true" xmlns:log4j='http://jakarta.apache.org/log4j/'>
+
+    <appender name="console" class="org.apache.log4j.ConsoleAppender">
+        <param name="Target" value="System.out"/>
+        <layout class="org.apache.log4j.PatternLayout">
+            <param name="ConversionPattern" value="%d{yyyy-MM-ddTHH:mm:ss-SSS} %-5p %c{1}:%L - %m%n"/>
+        </layout>
+    </appender>
+
+    <appender name="sparklog" class="org.apache.log4j.RollingFileAppender">
+        <param name="File" value="${spark.yarn.app.container.log.dir}/stdout"/>
+        <param name="maxFileSize" value="50MB"/>
+        <param name="maxBackupIndex" value="10"/>
+        <layout class="org.apache.log4j.PatternLayout">
+            <param name="ConversionPattern" value="%d{yyyy-MM-ddTHH:mm:ss-SSS} | %-5p | [%t] | %m | %l%n"/>
+        </layout>
+    </appender>
+
+    <appender name="trazadoRollingAppender" class="org.apache.log4j.DailyRollingFileAppender">
+        <param name="File" value="trazado-cfiscal.log"/>
+        <layout class="org.apache.log4j.PatternLayout">
+            <param name="ConversionPattern" value="%d{yyyy-MM-ddTHH:mm:ss-SSS} %-5p %c{1}:%L - %m%n"/>
+        </layout>
+    </appender>
+
+    <appender name="performanceRollingAppender" class="org.apache.log4j.DailyRollingFileAppender">
+        <param name="File" value="performance-cfiscal.log"/>
+        <layout class="org.apache.log4j.PatternLayout">
+            <param name="ConversionPattern" value="%d{yyyy-MM-ddTHH:mm:ss-SSS} %-5p %c{1}:%L - %m%n"/>
+        </layout>
+    </appender>
+
+    <logger name="org.sparkproject.jetty">
+        <level value="warn"/>
+        <appender-ref ref="trazadoRollingAppender"/>
+    </logger>
+
+    <logger name="org.apache.spark.repl.SparkIMain$exprTyper">
+        <level value="info" />
+        <appender-ref ref="trazadoRollingAppender"/>
+    </logger>
+
+    <logger name="org.sparkproject.jetty.util.component.AbstractLifeCycle">
+        <level value="error"/>
+        <appender-ref ref="trazadoRollingAppender"/>
+    </logger>
+
+    <logger name="com.huawei.hadoop.dynalogger.DynaLog4jWatcher">
+        <level value="off"/>
+    </logger>
+
+    <logger name="org.apache.spark.repl.SparkILoop$SparkILoopInterpreter">
+        <level value="info"/>
+        <appender-ref ref="trazadoRollingAppender"/>
+    </logger>
+
+    <root>
+        <priority value="info"></priority>
+        <appender-ref ref="sparklog" />
+        <appender-ref ref="trazadoRollingAppender" />
+        <appender-ref ref="performanceRollingAppender" />
+    </root>
+
+</log4j:configuration>
